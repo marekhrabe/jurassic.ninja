@@ -3,6 +3,7 @@ const CREATE_PAGE_SLUG = '/create';
 const SPECIALOPS_CREATE_PAGE_SLUG = '/specialops';
 
 const originalProgressText = jQuery( '#progress' ).text();
+const originalDocumentTitle = document.title;
 
 init();
 
@@ -49,15 +50,18 @@ function launchSiteWithFeatures( $, features ) {
 	$( function() {
 		$( '#progress' ).text( originalProgressText );
 		$( '#progress' ).show();
+		document.title = 'Working… ' + originalDocumentTitle;
 		startSpinner();
 		jurassicNinjaApi().specialops( features )
 			.then( response => {
 				$( '#progress' ).html( `<a href="${ response.data.url }">The new WP is ready to go, visit it!</a>` );
 				stopSpinner();
+				document.title = 'Ready To Go! ' + originalDocumentTitle;
 			} )
 			.catch( err => {
 				$( '#progress' ).text( `Oh No! There was a problem launching the new WP. (${ err.message }).` );
 				stopSpinner( true );
+				document.title = 'Error! ' + originalDocumentTitle;
 			} );
 	} );
 }
